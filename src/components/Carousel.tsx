@@ -3,138 +3,102 @@ import './Carousel.scss';
 
 type CarouselProps = {
   images: string[];
-  itemWidth?: number;
-  frameSize?: number;
   step?: number;
+  frameSize?: number;
+  itemWidth?: number;
   animationDuration?: number;
   infinite?: boolean;
 };
 
+
 const Carousel: React.FC<CarouselProps> = ({
   images,
-  itemWidth = 130,
-  frameSize = 3,
   step = 3,
+  frameSize = 3,
+  itemWidth = 130,
   animationDuration = 1000,
   infinite = false,
 }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [position, setPosition] = useState(0);
 
-  const total = images.length;
-  const visibleCount = frameSize;
-  const lastStart = Math.max(0, total - visibleCount);
+  const maxPosition = Math.max(0, images.length - frameSize);
 
-  const clampIndex = (index: number) => {
-    if (!infinite) {
-      return Math.min(Math.max(index, 0), lastStart);
-    }
-
-    if (total === 0) {
-      return 0;
-    }
-
-    return ((index % total) + total) % total;
-  };
-
-  const canGoPrev = infinite || currentIndex > 0;
-  const canGoNext = infinite || currentIndex < lastStart;
+  const isPrevDisabled = !infinite && position === 0;
+  const isNextDisabled = !infinite && position === maxPosition;
 
   const handlePrev = () => {
-    if (!canGoPrev) {
-      return;
-    }
-
-    setCurrentIndex(prev => {
-      let stepValue = step;
-
-      if (!infinite && prev < step) {
-        stepValue = prev;
+    setPosition(prev => {
+      if (infinite) {
+        return (prev - step + images.length) % images.length;
       }
 
-      const nextIndex = prev - stepValue;
-
-      return clampIndex(nextIndex);
+      return Math.max(prev - step, 0);
     });
   };
 
   const handleNext = () => {
-    if (!canGoNext) {
-      return;
-    }
-
-    setCurrentIndex(prev => {
-      let stepValue = step;
-
-      if (!infinite && prev + step > lastStart) {
-        stepValue = lastStart - prev;
+    setPosition(prev => {
+      if (infinite) {
+        return (prev + step) % images.length;
       }
 
-      const nextIndex = prev + stepValue;
-
-      return clampIndex(nextIndex);
+      return Math.min(prev + step, maxPosition);
     });
   };
 
-  const offset = -(currentIndex * (itemWidth + 10));
+  const listWidth = images.length * itemWidth;
 
-  const viewportStyle: React.CSSProperties = {
-    width: frameSize * itemWidth + (frameSize - 1) * 10,
-    height: itemWidth + 10,
-  };
-
-  const imageStyle: React.CSSProperties = {
-    width: `${itemWidth}px`,
-    height: `${itemWidth}px`,
-  };
-
-  const listStyle: React.CSSProperties = {
-    transform: `translateX(${offset}px)`,
-    transition: `transform ${animationDuration}ms ease`,
-    width: `calc(${total} * ${itemWidth}px + ${total - 1} * 10px)`,
-  };
-
-  return (
-    <div className="Carousel">
+return (
+  <div className="Carousel">
+    <div
+      className="Carousel__frame"
+      style={{
+        width: `${frameSize * itemWidth}px`,
+        overflow: 'hidden',
+      }}
+    >
+      <ul
+        className="Carousel__list"
+        style={{
+          width: `${listWidth}px`,
+          display: 'flex',
+          transform: `translateX(-${position * itemWidth}px)`,
+          transition: `transform ${animationDuration}ms`,
+        }}
+      >
+        {images.map((img, index) => (
+          <li key={index} style={{ flexShrink: 0 }}>
+            <img
+              src={img}
+              alt={`Slide ${index + 1}`}
+              width={itemWidth}
+              style={{ width: `${itemWidth}px` }}
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
+      <div className='buttons'>
       <button
-        id="btn-prev"
+        className="buttontPrev"
         type="button"
-        className={`Carousel__arrow Carousel__arrow--prev ${!canGoPrev ? 'disabled' : ''}`}
         onClick={handlePrev}
-        disabled={!canGoPrev}
+        disabled={isPrevDisabled}
       >
-        <span aria-hidden="true">‹</span>
-        <span className="sr-only">Previous</span>
+        {'<'}
       </button>
-
-      <div className="Carousel__viewport" style={viewportStyle}>
-        <ul className="Carousel__list" style={listStyle}>
-          {images.map((src, index) => (
-            <li key={src + index} data-cy="item">
-              <img
-                data-cy="image"
-                src={src}
-                alt={String(index + 1)}
-                style={imageStyle}
-                width={itemWidth}
-              />
-            </li>
-          ))}
-        </ul>
-      </div>
-
       <button
-        id="btn-next"
+        className="buttontNext"
         type="button"
-        className={`Carousel__arrow Carousel__arrow--next ${!canGoNext ? 'disabled' : ''}`}
-        onClick={handleNext}
-        disabled={!canGoNext}
         data-cy="next"
+        onClick={handleNext}
+        disabled={isNextDisabled}
       >
-        <span aria-hidden="true">›</span>
-        <span className="sr-only">Next</span>
+        {'>'}
       </button>
     </div>
-  );
+  </div>
+);
 };
 
 export default Carousel;

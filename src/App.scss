@@ -1,38 +1,14 @@
-// style go here
 .App {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
+  padding: 20px;
+  font-family: sans-serif;
 
-.App__controls {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
-  justify-content: center;
-
-  label {
+  > div:first-of-type {
     display: flex;
-    flex-direction: column;
-    gap: 5px;
-    font-size: 14px;
-
-    span {
-      font-weight: 500;
-    }
-
-    input {
-      padding: 6px 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 14px;
-      width: 120px;
-
-      &:focus {
-        outline: none;
-        border-color: #4a90e2;
-      }
-    }
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
   }
 }
