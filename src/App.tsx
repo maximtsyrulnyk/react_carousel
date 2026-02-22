@@ -44,6 +44,7 @@ export const App: React.FC = () => {
           onChange={e => {
             const newValue = Number(e.target.value);
             const clampedValue = Math.max(1, Math.min(newValue, images.length));
+
             setFrameSize(clampedValue);
           }}
         />

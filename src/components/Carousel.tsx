@@ -10,7 +10,6 @@ type CarouselProps = {
   infinite?: boolean;
 };
 
-
 const Carousel: React.FC<CarouselProps> = ({
   images,
   step = 3,
@@ -48,57 +47,57 @@ const Carousel: React.FC<CarouselProps> = ({
 
   const listWidth = images.length * itemWidth;
 
-return (
-  <div className="Carousel">
-    <div
-      className="Carousel__frame"
-      style={{
-        width: `${frameSize * itemWidth}px`,
-        overflow: 'hidden',
-      }}
-    >
-      <ul
-        className="Carousel__list"
+  return (
+    <div className="Carousel">
+      <div
+        className="Carousel__frame"
         style={{
-          width: `${listWidth}px`,
-          display: 'flex',
-          transform: `translateX(-${position * itemWidth}px)`,
-          transition: `transform ${animationDuration}ms`,
+          width: `${frameSize * itemWidth}px`,
+          overflow: 'hidden',
         }}
       >
-        {images.map((img, index) => (
-          <li key={index} style={{ flexShrink: 0 }}>
-            <img
-              src={img}
-              alt={`Slide ${index + 1}`}
-              width={itemWidth}
-              style={{ width: `${itemWidth}px` }}
-            />
-          </li>
-        ))}
-      </ul>
+        <ul
+          className="Carousel__list"
+          style={{
+            width: `${listWidth}px`,
+            display: 'flex',
+            transform: `translateX(-${position * itemWidth}px)`,
+            transition: `transform ${animationDuration}ms`,
+          }}
+        >
+          {images.map((img, index) => (
+            <li key={index} style={{ flexShrink: 0 }}>
+              <img
+                src={img}
+                alt={`Slide ${index + 1}`}
+                width={itemWidth}
+                style={{ width: `${itemWidth}px` }}
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="buttons">
+        <button
+          className="buttontPrev"
+          type="button"
+          onClick={handlePrev}
+          disabled={isPrevDisabled}
+        >
+          {'<'}
+        </button>
+        <button
+          className="buttontNext"
+          type="button"
+          data-cy="next"
+          onClick={handleNext}
+          disabled={isNextDisabled}
+        >
+          {'>'}
+        </button>
+      </div>
     </div>
-      <div className='buttons'>
-      <button
-        className="buttontPrev"
-        type="button"
-        onClick={handlePrev}
-        disabled={isPrevDisabled}
-      >
-        {'<'}
-      </button>
-      <button
-        className="buttontNext"
-        type="button"
-        data-cy="next"
-        onClick={handleNext}
-        disabled={isNextDisabled}
-      >
-        {'>'}
-      </button>
-    </div>
-  </div>
-);
+  );
 };
 
 export default Carousel;
